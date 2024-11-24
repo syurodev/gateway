@@ -1,5 +1,4 @@
-require('dotenv');
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { ClientsModule, GrpcOptions, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 
@@ -36,6 +35,8 @@ const channelOptions: GrpcOptions['options']['channelOptions'] = {
     'grpc.http2.max_frame_size': 1024 * 1024 * 10, // Set the maximum frame size if needed
   },
 };
+
+@Global()
 @Module({
   imports: [
     ClientsModule.register([
@@ -53,5 +54,6 @@ const channelOptions: GrpcOptions['options']['channelOptions'] = {
       },
     ]),
   ],
+  exports: [ClientsModule],
 })
 export class GrpcModule {}

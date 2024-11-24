@@ -1,11 +1,11 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
 import { NestFactory } from '@nestjs/core';
 import * as fs from 'fs';
 import * as os from 'os';
-import * as dotenv from 'dotenv';
 import {
   HttpException,
   HttpStatus,
-  LogLevel,
   ValidationError,
   ValidationPipe,
   VersioningType,
@@ -49,5 +49,9 @@ async function bootstrap() {
 
   app.enableCors();
   await app.listen(process.env.SERVICE_PORT, '0.0.0.0');
+
+  for (const k in envConfig) {
+    console.log(`${k}=${envConfig[k]}`);
+  }
 }
 bootstrap();
