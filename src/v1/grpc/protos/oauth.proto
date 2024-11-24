@@ -1,0 +1,95 @@
+syntax = "proto3";
+
+package com.zen.grpc.nodejs.oauth.service;
+
+service OauthService {
+  rpc register (RegisterDTO) returns (BaseResponse) {}
+  rpc login (LoginDTO) returns (LoginResponse) {}
+  rpc logout (LogoutDTO) returns (BaseResponse) {}
+
+  // TOKEN
+  rpc validateToken (ValidateTokenDTO) returns (LoginResponse) {}
+  rpc refreshToken (ValidateTokenDTO) returns (LoginResponse) {}
+}
+
+message Empty {}
+
+message BaseResponse {
+  int32 status = 1;
+  string message = 2;
+  Empty data = 3;
+}
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> REGISTER <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  message RegisterDTO {
+    string email = 1;
+    string username = 2;
+    string password = 3;
+  }
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> REGISTER <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> LOGIN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  message LoginDTO {
+    string username = 1;
+    string password = 2;
+    DeviceInfo device_info = 3;
+  }
+
+  // Thông tin vị trí
+  message Location {
+    string ip = 1;             // Địa chỉ IP
+    string city = 2;           // Thành phố
+    string region = 3;         // Vùng miền
+    string country = 4;        // Quốc gia (Mã quốc gia)
+    string location = 5;       // Tọa độ (latitude, longitude)
+    string postal = 6;         // Mã bưu chính
+    string timezone = 7;       // Múi giờ
+  }
+
+  // Thông tin thiết bị
+  message DeviceInfo {
+    string os = 1;             // Hệ điều hành
+    string browser = 2;        // Tên trình duyệt
+    string browser_version = 3; // Phiên bản trình duyệt
+    string device_type = 4;     // Loại thiết bị
+    Location location = 5;     // Thông tin vị trí
+  }
+
+  message Tokens {
+    string access_token = 1;
+    string refresh_token = 2;
+  }
+
+  message LoginResponseData {
+    int32 id = 1;
+    string username = 2;
+    string email = 3;
+    string first_name = 4;
+    string last_name = 5;
+    string avatar = 6;
+    repeated string roles = 7;
+    repeated string privileges = 8;
+    Tokens tokens = 9;
+  }
+
+  message LoginResponse {
+    int32 status = 1;
+    string message = 2;
+    LoginResponseData data = 3;
+  }
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> LOGIN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> LOGOUT <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  message LogoutDTO {
+    int32 user_id = 1;
+    string access_token = 2;
+  }
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> LOGOUT <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> VALIDATE_TOKEN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  message ValidateTokenDTO {
+    string token = 1;
+  }
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> VALIDATE_TOKEN <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
