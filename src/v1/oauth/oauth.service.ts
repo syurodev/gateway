@@ -33,7 +33,10 @@ export class OauthService {
   ): Promise<BaseResponse> {
     try {
       return await GrpcUtil.reTry<BaseResponse>(
-        this.oauthServiceClient.register(registerDTO, metadata),
+        this.oauthServiceClient.register(
+          registerDTO,
+          metadata ?? new Metadata(),
+        ),
       );
     } catch (e) {
       throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
@@ -43,7 +46,7 @@ export class OauthService {
   async login(loginDTO: LoginDTO, metadata?: Metadata): Promise<LoginResponse> {
     try {
       return await GrpcUtil.reTry<LoginResponse>(
-        this.oauthServiceClient.login(loginDTO, metadata),
+        this.oauthServiceClient.login(loginDTO, metadata ?? new Metadata()),
       );
     } catch (e) {
       throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
