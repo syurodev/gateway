@@ -1,15 +1,13 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
-
-import { AppV1Module } from './v1/app.module';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import { ProxyMiddleware } from './common/middleware/proxy.middleware';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      envFilePath: '.env',
-      isGlobal: true,
-    }),
-    AppV1Module,
-  ],
+  imports: [],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(ProxyMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}
