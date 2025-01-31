@@ -1,4 +1,4 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
+import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware';
 
@@ -13,8 +13,8 @@ export class ProxyMiddleware implements NestMiddleware {
 
     // Ánh xạ projectId với các URL đích
     const targetMap: Record<string, string> = {
+      // '3002': 'http://novel.wibutime.svc.cluster.local',
       '3002': 'http://localhost:3002',
-      '3003': 'http://localhost:3003',
     };
 
     const target: string = targetMap[projectId as string];
@@ -36,9 +36,8 @@ export class ProxyMiddleware implements NestMiddleware {
 
     // Xử lý lỗi thủ công
     await proxy(req, res, (proxyErr: any) => {
-      console.log(req);
       if (proxyErr) {
-        console.error('Proxy error:', proxyErr.message);
+        Logger.error('Proxy error:', proxyErr.message);
         return res.status(500).send({ error: 'Proxy error occurred' });
       }
       next();
