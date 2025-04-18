@@ -1,12 +1,13 @@
 import * as dotenv from 'dotenv';
+dotenv.config();
+
+import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import * as fs from 'fs';
-import { Logger } from '@nestjs/common';
 
 import * as process from 'node:process';
 import { AppModule } from './app.module';
 
-dotenv.config();
 const envConfig = dotenv.parse(fs.readFileSync('.env'));
 
 async function bootstrap() {

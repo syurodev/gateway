@@ -1,20 +1,24 @@
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
-import { ProxyMiddleware } from './common/middleware/proxy.middleware';
-import { DecryptMiddleware } from './common/middleware/decrypt.middleware';
 import { AppController } from './app.controller';
+import { AuthMiddleware } from './common/middleware/auth.middleware';
+import { ProxyMiddleware } from './common/middleware/proxy.middleware';
+import { GrpcModule } from './grpc/client/grpc.module';
 
 @Module({
-  imports: [],
+  imports: [GrpcModule],
   controllers: [AppController],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(DecryptMiddleware)
-      .exclude({ path: 'health-check', method: RequestMethod.ALL }) // Loại trừ tất cả method của /health-check
-      .forRoutes({ path: '*', method: RequestMethod.POST })
+      .apply(AuthMiddleware)
+      .exclude({ path: 'health-check', method: RequestMethod.ALL })
+      .forRoutes({ path: '*', method: RequestMethod.ALL })
+      // .apply(DecryptMiddleware)
+      // .exclude({ path: 'health-check', method: RequestMethod.ALL })
+      // .forRoutes({ path: '*', method: RequestMethod.POST })
       .apply(ProxyMiddleware)
-      .exclude({ path: 'health-check', method: RequestMethod.ALL }) // Loại trừ tất cả method của /health-check
+      .exclude({ path: 'health-check', method: RequestMethod.ALL })
       .forRoutes({ path: '*', method: RequestMethod.ALL });
   }
 }

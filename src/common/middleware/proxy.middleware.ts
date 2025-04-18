@@ -5,7 +5,7 @@ import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware';
 @Injectable()
 export class ProxyMiddleware implements NestMiddleware {
   async use(req: Request, res: Response, next: NextFunction) {
-    const projectId = req.headers['projectid'];
+    const projectId = req.headers['x-project-id'];
 
     if (!projectId) {
       return res.status(400).send({ error: 'projectid is required' });
@@ -13,7 +13,8 @@ export class ProxyMiddleware implements NestMiddleware {
 
     // Ánh xạ projectId với các URL đích
     const targetMap: Record<string, string> = {
-      '3002': process.env.CONFIG_PROXY_NOVEL_SERVICE,
+      '1001': process.env.CONFIG_PROXY_USER_SERVICE,
+      '1002': process.env.CONFIG_PROXY_NOVEL_SERVICE,
     };
 
     const target: string = targetMap[projectId as string];
